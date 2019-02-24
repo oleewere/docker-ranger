@@ -3,8 +3,12 @@ MAINTAINER oleewere@gmail.com
 
 RUN apt-get update && apt-get install -y python procps
 
-ENV RANGER_ADMIN_VERSION 2.0.0-SNAPSHOT
-ENV RANGER_DOWNLOAD_URL https://github.com/oleewere/playground/releases/download/ranger/ranger-$RANGER_ADMIN_VERSION-admin.tar.gz
+ARG RANGER_ADMIN_VERSION_ARG=2.0.0-SNAPSHOT
+ENV RANGER_ADMIN_VERSION $RANGER_ADMIN_VERSION_ARG
+
+ARG RANGER_DOWNLOAD_URL_ARG=https://github.com/oleewere/playground/releases/download/ranger/ranger-$RANGER_ADMIN_VERSION-admin.tar.gz
+
+ENV RANGER_DOWNLOAD_URL $RANGER_DOWNLOAD_URL_ARG
 ENV MYSQL_JAVA_CONNECTOR_VERSION 5.1.38
 
 RUN wget --no-check-certificate -O /root/ranger-$RANGER_ADMIN_VERSION-admin.tar.gz $RANGER_DOWNLOAD_URL
