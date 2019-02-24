@@ -1,6 +1,8 @@
 FROM openjdk:8-jre
 MAINTAINER oleewere@gmail.com
 
+RUN apt-get update && apt-get install -y python procps
+
 ENV RANGER_ADMIN_VERSION 2.0.0-SNAPSHOT
 ENV RANGER_DOWNLOAD_URL https://github.com/oleewere/playground/releases/download/ranger/ranger-$RANGER_ADMIN_VERSION-admin.tar.gz
 ENV MYSQL_JAVA_CONNECTOR_VERSION 5.1.38
@@ -9,12 +11,11 @@ RUN wget --no-check-certificate -O /root/ranger-$RANGER_ADMIN_VERSION-admin.tar.
 RUN wget --no-check-certificate -O /root/mysql-connector.tar.gz https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-$MYSQL_JAVA_CONNECTOR_VERSION.tar.gz
 RUN cd /usr/local && tar zxvf /root/ranger-$RANGER_ADMIN_VERSION-admin.tar.gz
 RUN ln -s /usr/local/ranger-$RANGER_ADMIN_VERSION-admin /usr/local/ranger-admin
-RUN mkdir /usr/local/share/mysql && \
+RUN mkdir /usr/local/share/java && \
   cd /root/ && tar zxvf /root/mysql-connector.tar.gz && \
-  cp /root/mysql-connector-java-$MYSQL_JAVA_CONNECTOR_VERSION/mysql-connector-java-$MYSQL_JAVA_CONNECTOR_VERSION-bin.jar /usr/local/share/mysql/mysql-connector-java.jar
-ENV RANGER_SQL_CONNECTOR_JAR /usr/local/share/mysql/mysql-connector-java.jar
+  cp /root/mysql-connector-java-$MYSQL_JAVA_CONNECTOR_VERSION/mysql-connector-java-$MYSQL_JAVA_CONNECTOR_VERSION-bin.jar /usr/local/share/java/mysql-connector-java.jar
+ENV RANGER_SQL_CONNECTOR_JAR /usr/local/share/java/mysql-connector-java.jar
 
-RUN apt-get update && apt-get install -y python procps
 RUN ls -la /usr/local/ranger-$RANGER_ADMIN_VERSION-admin
 
 ENV RANGER_ADMIN_PATH /usr/local/ranger-admin
@@ -27,12 +28,19 @@ ENV RANGER_ADMIN_GID="6080"
 ADD bin/entrypoint.sh /entrypoint.sh
 ADD bin/init.sh /init.sh
 ADD conf/install.properties $RANGER_ADMIN_PATH/bin/install.properties
+RUN mkdir -p /etc/conf/ranger-admin
+ADD conf/log4j.xml /etc/conf/ranger-admin/log4j.xml
+ADD conf/core-site.xml /etc/conf/ranger-admin/core-site.xml
+RUN cp -r $RANGER_ADMIN_PATH/ews/webapp/WEB-INF/classes/conf.dist $RANGER_ADMIN_PATH/ews/webapp/WEB-INF/classes/conf
+ADD conf/ranger-admin-site.xml $RANGER_ADMIN_PATH/ews/webapp/WEB-INF/classes/conf/ranger-admin-site.xml
 
 WORKDIR /usr/local/ranger-admin
 
 RUN groupadd -r --gid $RANGER_ADMIN_GID $RANGER_ADMIN_GROUP && useradd -r --uid $RANGER_ADMIN_UID --gid $RANGER_ADMIN_GID $RANGER_ADMIN_USER
 RUN mkdir -p /var/log/ranger && chown -R $RANGER_ADMIN_USER:$RANGER_ADMIN_GROUP /var/log/ranger
 RUN mkdir -p /var/run/ranger && chown -R $RANGER_ADMIN_USER:$RANGER_ADMIN_GROUP /var/run/ranger
+RUN chown $RANGER_ADMIN_USER:$RANGER_ADMIN_GROUP /etc/conf/ranger-admin
+RUN chown -R $RANGER_ADMIN_USER:$RANGER_ADMIN_GROUP /etc/conf/ranger-admin/*
 RUN mkdir -p $RANGER_ADMIN_PATH/ews/logs && chown -R $RANGER_ADMIN_USER:$RANGER_ADMIN_GROUP $RANGER_ADMIN_PATH/ews/logs
 RUN mkdir -p $RANGER_ADMIN_PATH/ews/webapp/WEB-INF/classes/conf && chown -R $RANGER_ADMIN_USER:$RANGER_ADMIN_GROUP $RANGER_ADMIN_PATH/ews/webapp/WEB-INF/classes/conf
 RUN find $RANGER_ADMIN_PATH -type d -exec chmod 755 {} +
@@ -40,10 +48,12 @@ RUN find $RANGER_ADMIN_PATH -type f -exec chmod 660 {} +
 RUN chown $RANGER_ADMIN_USER:$RANGER_ADMIN_GROUP /usr/local/ranger-$RANGER_ADMIN_VERSION-admin
 RUN chown $RANGER_ADMIN_USER:$RANGER_ADMIN_GROUP $RANGER_ADMIN_PATH
 RUN chown -R $RANGER_ADMIN_USER:$RANGER_ADMIN_GROUP $RANGER_ADMIN_PATH/**
-RUN chown $RANGER_ADMIN_USER:$RANGER_ADMIN_GROUP /usr/local/share/mysql/mysql-connector-java.jar
+RUN chown $RANGER_ADMIN_USER:$RANGER_ADMIN_GROUP /usr/local/share/java/mysql-connector-java.jar
 
 RUN chmod 755 /entrypoint.sh
 RUN chmod 755 /init.sh
+
+EXPOSE 6080/tcp
 
 USER $RANGER_ADMIN_USER
 CMD ["/entrypoint.sh"]
