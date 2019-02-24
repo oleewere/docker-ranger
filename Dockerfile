@@ -33,6 +33,8 @@ ADD conf/log4j.xml /etc/conf/ranger-admin/log4j.xml
 ADD conf/core-site.xml /etc/conf/ranger-admin/core-site.xml
 RUN cp -r $RANGER_ADMIN_PATH/ews/webapp/WEB-INF/classes/conf.dist $RANGER_ADMIN_PATH/ews/webapp/WEB-INF/classes/conf
 ADD conf/ranger-admin-site.xml $RANGER_ADMIN_PATH/ews/webapp/WEB-INF/classes/conf/ranger-admin-site.xml
+RUN rm $RANGER_ADMIN_PATH/ews/webapp/WEB-INF/log4j.xml
+RUN rm $RANGER_ADMIN_PATH/ews/webapp/WEB-INF/log4j.properties
 
 WORKDIR /usr/local/ranger-admin
 

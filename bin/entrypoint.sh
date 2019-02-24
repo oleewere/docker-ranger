@@ -52,7 +52,7 @@ function setup() {
 function start() {
   setup $RANGER_ADMIN_PATH/bin/install.properties
 
-  java -Dproc_rangeradmin ${JAVA_OPTS} -Duser=${USER} -Dhostname=$(hostname -f) \
+  java -Dproc_rangeradmin ${JAVA_OPTS} -Duser=${USER} -Dhostname=${RANGER_ADMIN_HOSTNAME} \
     -Dlog4j.configuration="file:${RANGER_ADMIN_CONF}/log4j.xml" -Dranger.service.host=${RANGER_ADMIN_HOSTNAME} \
     -Dxa.webapp.dir="${XAPOLICYMGR_EWS_DIR}/webapp" \
     ${DB_SSL_PARAM} -Dservername=${SERVER_NAME} -Dlogdir=${RANGER_ADMIN_LOG_DIR} -Dcatalina.base=${XAPOLICYMGR_EWS_DIR} \
