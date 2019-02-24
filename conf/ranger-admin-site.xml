@@ -6,17 +6,17 @@
 	</property>
 	<property>
 		<name>ranger.jpa.jdbc.url</name>
-		<value>jdbc:log4jdbc:mysql://mariadb/ranger</value>
+		<value>jdbc:log4jdbc:mysql://mariadb/rangerdb</value>
 		<description></description>
 	</property>
 	<property>
 		<name>ranger.jpa.jdbc.user</name>
-		<value>rangeradmin</value>
+		<value>rangerdba</value>
 		<description></description>
 	</property>
 	<property>
 		<name>ranger.jpa.jdbc.password</name>
-		<value>rangeradmin</value>
+		<value>rangerdba</value>
 		<description></description>
 	</property>
 	<property>

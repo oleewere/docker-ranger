@@ -33,10 +33,22 @@ services:
     hostname: mariadb
     environment:
       MYSQL_ROOT_PASSWORD: rangerdba
+      MYSQL_DATABASE: rangerdb
+      MYSQL_USER: rangerdba
+      MYSQL_PASSWORD: rangerdba
     ports:
      - "3306:3306"
     networks:
      - ranger-network
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8000:8080
+    networks:
+      - ranger-network
+    volumes:
+      - "./initdb/init.sql:/docker-entrypoint-initdb.d/1-init.sql"
   rangeradmin:
     image: oleewere/ranger-admin:latest
     hostname: rangeradmin
