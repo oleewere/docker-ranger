@@ -1,0 +1,50 @@
+version: '3'
+services:
+  zookeeper:
+    image: zookeeper:${ZOOKEEPER_VERSION:-3.4.10}
+    restart: always
+    hostname: zookeeper
+    networks:
+      - ranger-network
+    ports:
+      - 2181:2181
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zookeeper:2888:3888
+  solr:
+    image: solr:${SOLR_VERSION:-7.7.0}
+    restart: always
+    hostname: solr
+    ports:
+      - "8983:8983"
+    networks:
+      - ranger-network
+    entrypoint:
+      - docker-entrypoint.sh
+      - solr
+      - start
+      - "-f"
+      - "-c"
+      - "-z"
+      - zookeeper:2181
+  mariadb:
+    image: mariadb:10.4
+    restart: always
+    hostname: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: rangerdba
+    ports:
+     - "3306:3306"
+    networks:
+     - ranger-network
+  rangeradmin:
+    image: oleewere/ranger-admin:latest
+    hostname: rangeradmin
+    restart: always
+    ports:
+      - "6080:6080"
+    networks:
+      - ranger-network
+networks:
+   ranger-network:
+      driver: bridge
