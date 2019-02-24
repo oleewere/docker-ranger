@@ -28,7 +28,7 @@ RANGER_JAAS_LIB_DIR="${XAPOLICYMGR_EWS_DIR}/ranger_jaas"
 RANGER_JAAS_CONF_DIR="${XAPOLICYMGR_EWS_DIR}/webapp/WEB-INF/classes/conf/ranger_jaas"
 RANGER_ADMIN_HOSTNAME="localhost"
 RANGER_ADMIN_CONF="/etc/conf/ranger-admin"
-RANGER_ADMIN_SITE_CONFIG="${XAPOLICYMGR_EWS_DIR}/webapp/WEB-INF/classes/conf/ranger-admin-site.xml"
+RANGER_ADMIN_SITE_CONFIG="${RANGER_ADMIN_CONF}/ranger-admin-site.xml"
 RANGER_LOG4J_PROPS_FILE="${XAPOLICYMGR_EWS_DIR}/webapp/WEB-INF/log4j.properties"
 SERVER_NAME="rangeradmin"
 RANGER_ADMIN_LOG_DIR="/var/log/ranger"
@@ -57,7 +57,7 @@ function start() {
     -Dlog4j.configuration="file:${RANGER_LOG4J_PROPS_FILE}" -Dranger.service.host=${RANGER_ADMIN_HOSTNAME} \
     -Dxa.webapp.dir="${XAPOLICYMGR_EWS_DIR}/webapp" \
     ${DB_SSL_PARAM} -Dservername=${SERVER_NAME} -Dlogdir=${RANGER_ADMIN_LOG_DIR} -Dcatalina.base=${XAPOLICYMGR_EWS_DIR} \
-    -cp "${XAPOLICYMGR_EWS_DIR}/webapp/WEB-INF/classes/conf:${XAPOLICYMGR_EWS_DIR}/lib/*:${RANGER_JAAS_LIB_DIR}/*:${RANGER_JAAS_CONF_DIR}:${JAVA_HOME}/lib/*:${RANGER_HADOOP_CONF_DIR}/*:$CLASSPATH:$RANGER_ADMIN_CONF" \
+    -cp "${XAPOLICYMGR_EWS_DIR}/webapp/WEB-INF/classes/conf:${XAPOLICYMGR_EWS_DIR}/lib/*:${RANGER_JAAS_LIB_DIR}/*:${RANGER_JAAS_CONF_DIR}:${JAVA_HOME}/lib/*:${RANGER_HADOOP_CONF_DIR}/*:$CLASSPATH:$RANGER_ADMIN_CONF:$RANGER_SQL_CONNECTOR_JAR" \
     org.apache.ranger.server.tomcat.EmbeddedServer
 }
 

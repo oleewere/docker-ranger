@@ -35,8 +35,8 @@ ADD conf/install.properties $RANGER_ADMIN_PATH/bin/install.properties
 RUN mkdir -p /etc/conf/ranger-admin
 ADD conf/log4j.properties $RANGER_ADMIN_PATH/ews/webapp/WEB-INF/log4j.properties
 ADD conf/core-site.xml /etc/conf/ranger-admin/core-site.xml
-RUN cp -r $RANGER_ADMIN_PATH/ews/webapp/WEB-INF/classes/conf.dist $RANGER_ADMIN_PATH/ews/webapp/WEB-INF/classes/conf
-ADD conf/ranger-admin-site.xml $RANGER_ADMIN_PATH/ews/webapp/WEB-INF/classes/conf/ranger-admin-site.xml
+RUN cp -r $RANGER_ADMIN_PATH/ews/webapp/WEB-INF/classes/conf.dist $RANGER_ADMIN_PATH/ews/webapp/WEB-INF/classes/conf && rm $RANGER_ADMIN_PATH/ews/webapp/WEB-INF/classes/conf/ranger-admin-site.xml
+ADD conf/ranger-admin-site.xml /etc/conf/ranger-admin/ranger-admin-site.xml
 RUN rm $RANGER_ADMIN_PATH/ews/webapp/WEB-INF/log4j.xml
 
 WORKDIR /usr/local/ranger-admin
