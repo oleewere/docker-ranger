@@ -11,13 +11,13 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-RANGER_SQL_CONNECTOR_JAR=${RANGER_SQL_CONNECTOR_JAR:-"/usr/local/share/java/mysql-connector-java.jar"}
-RANGER_ADMIN_DB_ROOT_USER=${RANGER_ADMIN_DB_ROOT_USER:-"rangerdba"}
+RANGER_SQL_CONNECTOR_JAR=${RANGER_SQL_CONNECTOR_JAR:-"/usr/share/java/mysql-connector-java.jar"}
+RANGER_ADMIN_DB_ROOT_USER=${RANGER_ADMIN_DB_ROOT_USER:-"root"}
 RANGER_ADMIN_DB_ROOT_PASSWORD=${RANGER_ADMIN_DB_ROOT_PASSWORD:-"rangerdba"}
 RANGER_ADMIN_DB_HOST=${RANGER_ADMIN_DB_HOST:-"mariadb"}
 RANGER_ADMIN_DB_NAME=${RANGER_ADMIN_DB_NAME:-"rangerdb"}
-RANGER_ADMIN_DB_USER=${RANGER_ADMIN_DB_USER:-"admin"}
-RANGER_ADMIN_DB_PASSWORD=${RANGER_ADMIN_DB_PASSWORD:-"admin1234"}
+RANGER_ADMIN_DB_USER=${RANGER_ADMIN_DB_USER:-"rangerdba"}
+RANGER_ADMIN_DB_PASSWORD=${RANGER_ADMIN_DB_PASSWORD:-"rangerdba"}
 
 SOLR_URL=${SOLR_URL:-"http://solr:8983/solr"}
 SOLR_COLLECTION=${SOLR_COLLECTION:-"ranger_audits"}
@@ -27,7 +27,7 @@ XAPOLICYMGR_EWS_DIR=$RANGER_ADMIN_PATH/ews
 RANGER_JAAS_LIB_DIR="${XAPOLICYMGR_EWS_DIR}/ranger_jaas"
 RANGER_JAAS_CONF_DIR="${XAPOLICYMGR_EWS_DIR}/webapp/WEB-INF/classes/conf/ranger_jaas"
 RANGER_ADMIN_HOSTNAME="localhost"
-RANGER_ADMIN_CONF="/etc/conf/ranger-admin"
+RANGER_ADMIN_CONF="/etc/ranger-admin/conf"
 RANGER_ADMIN_SITE_CONFIG="${RANGER_ADMIN_CONF}/ranger-admin-site.xml"
 RANGER_LOG4J_PROPS_FILE="${XAPOLICYMGR_EWS_DIR}/webapp/WEB-INF/log4j.properties"
 SERVER_NAME="rangeradmin"
@@ -47,7 +47,13 @@ function setup() {
 
   sed -i "s|{RANGER_ADMIN_HOSTNAME}|$RANGER_ADMIN_HOSTNAME|g" $RANGER_ADMIN_SITE_CONFIG
 
+  cp $RANGER_ADMIN_PATH/bin/install.properties $RANGER_ADMIN_PATH/install.properties
+  sleep 10
   /usr/local/ranger-admin/setup.sh
+
+  #cp $RANGER_ADMIN_PATH/bin/install.properties $RANGER_ADMIN_PATH/install.properties
+
+  #/usr/bin/python db_setup.py -javapatch
 }
 
 function start() {
